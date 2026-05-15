@@ -1,0 +1,366 @@
+/* TryOnMate - Injected Styles */
+/* These styles are injected into every page alongside the content script */
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap');
+
+/* ─── Try On Button ─────────────────────────────────────────────────────── */
+
+#tryonmate-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 13px 22px;
+  background: #0d0d0d;
+  color: #f5f0e8;
+  border: none;
+  border-radius: 4px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  width: 100%;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#tryonmate-btn::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #c9a96e33 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+#tryonmate-btn:hover {
+  background: #1a1a1a;
+  transform: translateY(-1px);
+}
+
+#tryonmate-btn:hover::before {
+  opacity: 1;
+}
+
+#tryonmate-btn:active {
+  transform: translateY(0);
+}
+
+.tom-icon {
+  font-size: 16px;
+  color: #c9a96e;
+}
+
+/* ─── Modal ─────────────────────────────────────────────────────────────── */
+
+#tryonmate-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  align-items: center;
+  justify-content: center;
+}
+
+#tryonmate-modal.open {
+  display: flex;
+}
+
+.tom-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(4px);
+  animation: tom-fade-in 0.2s ease;
+}
+
+.tom-panel {
+  position: relative;
+  z-index: 1;
+  width: min(420px, 92vw);
+  background: #0f0e0c;
+  border: 1px solid #2a2620;
+  border-radius: 12px;
+  padding: 32px 28px;
+  font-family: 'DM Sans', sans-serif;
+  color: #f5f0e8;
+  animation: tom-slide-up 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.tom-close {
+  position: absolute;
+  top: 16px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: #6b6460;
+  font-size: 18px;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
+}
+
+.tom-close:hover {
+  color: #f5f0e8;
+  background: #1e1c18;
+}
+
+/* ─── State: Idle ───────────────────────────────────────────────────────── */
+
+#tom-idle {
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.tom-logo {
+  font-family: 'DM Serif Display', serif;
+  font-size: 22px;
+  color: #c9a96e;
+  letter-spacing: 0.02em;
+}
+
+.tom-tagline {
+  font-size: 13px;
+  color: #8a8078;
+  margin: 0;
+  font-weight: 300;
+}
+
+.tom-product-card {
+  display: flex;
+  gap: 12px;
+  background: #1a1814;
+  border: 1px solid #2a2620;
+  border-radius: 8px;
+  padding: 12px;
+  width: 100%;
+  align-items: center;
+}
+
+.tom-product-img {
+  width: 72px;
+  height: 72px;
+  object-fit: cover;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.tom-product-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tom-product-name {
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.3;
+  margin-bottom: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tom-product-desc {
+  font-size: 11px;
+  color: #6b6460;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.tom-generate-btn {
+  width: 100%;
+  padding: 14px;
+  background: linear-gradient(135deg, #c9a96e, #b8924a);
+  color: #0f0e0c;
+  border: none;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.02em;
+  transition: opacity 0.2s, transform 0.1s;
+}
+
+.tom-generate-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+.tom-hint {
+  font-size: 11px;
+  color: #4a4640;
+  margin: 0;
+}
+
+/* ─── State: Loading ────────────────────────────────────────────────────── */
+
+#tom-loading {
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 20px 0;
+}
+
+.tom-spinner {
+  width: 56px;
+  height: 56px;
+  position: relative;
+}
+
+.tom-spinner-ring {
+  width: 100%;
+  height: 100%;
+  border: 2px solid #2a2620;
+  border-top-color: #c9a96e;
+  border-radius: 50%;
+  animation: tom-spin 1s linear infinite;
+}
+
+.tom-loading-text {
+  font-size: 14px;
+  color: #8a8078;
+  margin: 0;
+  transition: opacity 0.3s;
+}
+
+.tom-progress-bar {
+  width: 100%;
+  height: 2px;
+  background: #2a2620;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.tom-progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #c9a96e, #e8c484);
+  width: 0%;
+  transition: width 3s ease;
+  border-radius: 2px;
+}
+
+/* ─── State: Result ─────────────────────────────────────────────────────── */
+
+#tom-result {
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.tom-result-image-wrap {
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid #2a2620;
+}
+
+.tom-result-image-wrap img {
+  width: 100%;
+  height: auto;
+  display: block;
+  max-height: 55vh;
+  object-fit: contain;
+  background: #1a1814;
+}
+
+.tom-result-actions {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+/* ─── State: Error ──────────────────────────────────────────────────────── */
+
+#tom-error {
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  text-align: center;
+}
+
+.tom-error-icon {
+  font-size: 32px;
+  color: #b85a4a;
+}
+
+.tom-error-msg {
+  font-size: 13px;
+  color: #8a8078;
+  margin: 0;
+}
+
+.tom-setup-link {
+  font-size: 12px;
+  color: #c9a96e;
+  text-decoration: none;
+  border-bottom: 1px solid #c9a96e44;
+  transition: color 0.15s;
+}
+
+.tom-setup-link:hover {
+  color: #e8c484;
+}
+
+/* ─── Shared Buttons ────────────────────────────────────────────────────── */
+
+.tom-btn-primary {
+  flex: 1;
+  padding: 12px;
+  background: linear-gradient(135deg, #c9a96e, #b8924a);
+  color: #0f0e0c;
+  border: none;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.tom-btn-primary:hover { opacity: 0.88; }
+
+.tom-btn-secondary {
+  flex: 1;
+  padding: 12px;
+  background: transparent;
+  color: #8a8078;
+  border: 1px solid #2a2620;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+
+.tom-btn-secondary:hover {
+  border-color: #4a4640;
+  color: #f5f0e8;
+}
+
+/* ─── Animations ────────────────────────────────────────────────────────── */
+
+@keyframes tom-slide-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes tom-slide-up {
+  from { opacity: 0; transform: translateY(24px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes tom-spin {
+  to { transform: rotate(360deg); }
+}

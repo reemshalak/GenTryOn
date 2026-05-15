@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "GenTryOn",
+  "version": "1.0.0",
+  "description": "See yourself wearing any outfit before you buy it.",
+  "permissions": ["storage", "activeTab", "scripting"],
+  "host_permissions": ["<all_urls>"],
+  "action": {
+    "default_popup": "popup/popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content.js"],
+      "css": ["content/content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["content/tryon-panel.html"],
+      "matches": ["<all_urls>"]
+    }
+  ]
+}

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GenTryOn</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ── SCREEN: API KEY ENTRY ──────────────────────────────────────────── -->
+  <div class="screen" id="screen-apikey">
+    <div class="logo-block">
+      <div class="logo">✦ TryOnMate</div>
+      <p class="tagline">See yourself in any outfit before you buy</p>
+    </div>
+    <div class="field">
+      <label class="label" for="apikey-input">HeyGen API Key</label>
+      <div class="input-row">
+        <input type="password" id="apikey-input" class="input" placeholder="hg_••••••••••••" autocomplete="off" />
+        <button class="icon-btn" id="apikey-toggle" title="Show key">👁</button>
+      </div>
+      <p class="hint">Get yours at <a href="https://app.heygen.com/settings?tab=api" target="_blank" class="link">HeyGen Settings →</a></p>
+    </div>
+    <div class="field">
+      <label class="label" for="orkey-input">OpenRouter API Key <span style="color:#5a9a6e;font-size:10px;font-weight:400;text-transform:none;letter-spacing:0">FREE</span></label>
+      <div class="input-row">
+        <input type="password" id="orkey-input" class="input" placeholder="sk-or-••••••••••••" autocomplete="off" />
+        <button class="icon-btn" id="orkey-toggle" title="Show key">👁</button>
+      </div>
+      <p class="hint">Free tier at <a href="https://openrouter.ai/keys" target="_blank" class="link">openrouter.ai/keys →</a> — used for outfit image compositing (Nano Banana)</p>
+    </div>
+    <button class="btn-primary" id="apikey-next">Continue →</button>
+    <p class="err" id="apikey-err"></p>
+  </div>
+
+  <!-- ── SCREEN: PHOTO UPLOAD ───────────────────────────────────────────── -->
+  <div class="screen" id="screen-upload" style="display:none">
+    <div class="progress-steps">
+      <div class="pstep done">API Key</div>
+      <div class="pstep-arrow">›</div>
+      <div class="pstep active">Photos</div>
+      <div class="pstep-arrow">›</div>
+      <div class="pstep">Train</div>
+    </div>
+    <p class="section-title">Upload your photos</p>
+<p class="section-sub">5–10 photos · include at least 2 full-body shots for best results</p>
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" id="photo-input" accept="image/jpeg,image/png,image/webp" multiple style="display:none" />
+      <div class="upload-inner" id="upload-inner">
+        <div class="upload-icon">📷</div>
+        <p class="upload-primary">Tap to choose photos</p>
+        <p class="upload-secondary">JPG, PNG or WebP · max 5MB each</p>
+      </div>
+    </div>
+
+    <div class="thumb-grid" id="thumb-grid"></div>
+
+    <div class="count-row" id="count-row" style="display:none">
+      <span class="count-badge" id="count-badge">0 photos</span>
+      <span class="count-hint" id="count-hint">Need at least 10</span>
+    </div>
+
+    <button class="btn-primary" id="upload-next" disabled>Train avatar →</button>
+    <button class="btn-ghost" id="upload-back">← Back</button>
+  </div>
+
+  <!-- ── SCREEN: TRAINING ───────────────────────────────────────────────── -->
+  <div class="screen" id="screen-training" style="display:none">
+    <div class="progress-steps">
+      <div class="pstep done">API Key</div>
+      <div class="pstep-arrow">›</div>
+      <div class="pstep done">Photos</div>
+      <div class="pstep-arrow">›</div>
+      <div class="pstep active">Train</div>
+    </div>
+
+    <div class="training-center" id="training-active">
+      <div class="spinner"></div>
+      <p class="training-title" id="training-title">Uploading photos…</p>
+      <p class="training-sub" id="training-sub">This takes 3–5 minutes. You can close this.</p>
+      <div class="prog-bar"><div class="prog-fill" id="training-prog" style="width:0%"></div></div>
+      <p class="prog-label" id="training-prog-label">Starting…</p>
+    </div>
+
+    <div class="training-done" id="training-done" style="display:none">
+      <div class="done-star">✦</div>
+      <p class="training-title">Avatar ready!</p>
+      <p class="training-sub">Go to any clothing store and click "Try On Me" on any product.</p>
+      <button class="btn-primary" id="training-finish">Start shopping →</button>
+    </div>
+  </div>
+
+  <!-- ── SCREEN: HOME ───────────────────────────────────────────────────── -->
+  <div class="screen" id="screen-home" style="display:none">
+    <header class="home-header">
+      <div class="logo small">✦ TryOnMate</div>
+      <div class="ready-pill"><span class="ready-dot"></span>Ready</div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="looks">My Looks</button>
+      <button class="tab" data-tab="tips">Tips</button>
+      <button class="tab" data-tab="settings">Settings</button>
+    </nav>
+
+    <!-- Looks tab -->
+    <div class="tab-pane active" id="tab-looks">
+      <div class="looks-empty" id="looks-empty">
+        <p class="empty-emoji">👗</p>
+        <p class="empty-title">No looks saved yet</p>
+        <p class="empty-sub">Browse any clothing store and hit <strong>Try On Me</strong>.</p>
+      </div>
+      <div class="looks-grid" id="looks-grid"></div>
+    </div>
+
+    <!-- Tips tab -->
+    <div class="tab-pane" id="tab-tips" style="display:none">
+      <div class="tips">
+        <div class="tip"><span class="tip-icon">👕</span><div><strong>Best for</strong> tops, jackets, dresses &amp; coats. Shoes and accessories are hit or miss.</div></div>
+        <div class="tip"><span class="tip-icon">🛍️</span><div><strong>Works on</strong> ASOS, Zara, H&amp;M, Shein and most product pages.</div></div>
+        <div class="tip"><span class="tip-icon">⏱️</span><div><strong>~15 seconds</strong> per look. Stay on the page and the result appears automatically.</div></div>
+        <div class="tip"><span class="tip-icon">🔗</span><div><strong>Share looks</strong> — each image has a direct link you can send to friends.</div></div>
+        <div class="tip"><span class="tip-icon">📸</span><div><strong>Better photos = better looks.</strong> Mix close-ups, half-body, and full-body shots when training.</div></div>
+      </div>
+    </div>
+
+    <!-- Settings tab -->
+    <div class="tab-pane" id="tab-settings" style="display:none">
+      <div class="settings-row">
+        <span class="settings-key">Avatar Group ID</span>
+        <span class="settings-val" id="s-avatar-id">—</span>
+      </div>
+      <div class="settings-row">
+        <span class="settings-key">API Key</span>
+        <span class="settings-val">••••••••••••</span>
+      </div>
+      <button class="btn-ghost danger" id="reset-btn" style="margin-top:16px">Reset &amp; retrain avatar</button>
+    </div>
+  </div>
+
+  <!-- ── LOOK DETAIL OVERLAY ────────────────────────────────────────────── -->
+  <div class="overlay" id="overlay-detail" style="display:none">
+    <button class="overlay-close" id="detail-close">✕</button>
+    <img class="detail-img" id="detail-img" src="" alt="Your look" />
+    <p class="detail-name" id="detail-name"></p>
+    <p class="detail-site" id="detail-site"></p>
+    <div class="detail-actions">
+      <button class="btn-primary" id="detail-copy">Copy link</button>
+      <button class="btn-ghost" id="detail-download">Save image</button>
+    </div>
+    <button class="btn-primary" id="detail-video" style="display:none; margin-top:6px">▶ Watch outfit video</button>
+    <p class="copy-confirm" id="copy-confirm" style="display:none">✓ Copied!</p>
+    <button class="btn-ghost danger small" id="detail-delete">Delete this look</button>
+  </div>
+
+</div>
+<script src="popup.js"></script>
+</body>
+</html>
